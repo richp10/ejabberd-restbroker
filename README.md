@@ -3,7 +3,7 @@
 This is a 'broker' which accepts jobs via Redis using sidekiq protocol and uses these to construct RESTful 
 commands to interact with the ejabberd API. 
 
-We use use goroutines for concurrent processing of jobs, so a high volume of messages can be processed very quickly. The app also re-uses the http connection with ejabberd, which is more efficient than re-creating this for every request. It increases resilience by allowing commands to be buffered and retried if they fail.  It also allows the sending applications to 'fire and forget', without waiting for the response from Rest. Because it uses the sidekiq protocol, any sidekiq compatible library can be used for the 'sender'.   
+We use goroutines for concurrent processing of jobs, so a high volume of messages can be processed very quickly. The app also re-uses the http connection with ejabberd, which is more efficient than re-creating this for every request. It increases resilience by allowing commands to be buffered and retried if they fail.  It also allows the sending applications to 'fire and forget', without waiting for the response from Rest. Because it uses the sidekiq protocol, any sidekiq compatible library can be used for the 'sender'.   
 
 Optionally, a request can return the response from ejabberd via a different Redis queue. This potentially allows async processing of the restful interaction with ejabberd.     
 
