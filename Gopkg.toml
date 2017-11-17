@@ -1,0 +1,4 @@
+[[constraint]]
+  name = "github.com/jrallison/go-workers"
+[[constraint]]
+    name = "github.com/smartystreets/goconvey"

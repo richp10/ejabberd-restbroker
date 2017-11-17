@@ -1,0 +1,8 @@
+# Folders
+/vendor/
+
+env.json
+/Gopkg.lock
+
+.idea
+
