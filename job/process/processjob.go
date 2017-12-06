@@ -1,11 +1,10 @@
 package process
 
 import (
-	"bytes"
-	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"ejabberd-restbroker/lib/flight"
 
@@ -27,17 +26,12 @@ func Job(message *workers.Msg) {
 		return
 	}
 
-	// First need to safely convert arguments to json
-	argsJson, err := GetJson(params)
-	if err != nil {
-		log.Printf("Unable to decode params. %+v", err)
-		return
-	}
-
+	// Params must be a json formatted string
 	// Use passed endpoint and add the arguments
 	req, err := http.NewRequest("POST",
 		c.Config.RestURL+"/"+endpoint,
-		bytes.NewBuffer(argsJson))
+		strings.NewReader(params.(string)))
+
 	if err != nil {
 		log.Printf("Error Occured. %+v", err)
 		return
@@ -74,28 +68,4 @@ func Job(message *workers.Msg) {
 		log.Println("Response Body:", string(body))
 	}
 	return
-}
-
-// This handles some inconsistencies in how arguments are passed
-func GetJson(args interface{}) ([]byte, error) {
-	switch v := args.(type) {
-	case map[string]interface{}:
-		argsJson, err := json.Marshal(args.(map[string]interface{}))
-		if err != nil {
-			log.Printf("Error Occured. %+v", err)
-			return nil, err
-		}
-		return argsJson, nil
-	case []interface{}:
-		argsJson, err := json.Marshal((args.(interface{})))
-		if err != nil {
-			log.Printf("Error Occured. %+v", err)
-			return nil, err
-		}
-		return argsJson, nil
-	default:
-		log.Println("Unknown argument format: ", v.(string))
-		return []byte(""), nil
-	}
-	return []byte(""), nil
 }
